@@ -11,8 +11,8 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/hello")
-public class HelloController {
+@RequestMapping("/covid")
+public class CovidController {
 
     @Autowired
     private CovidService covidService;
@@ -41,7 +41,15 @@ public class HelloController {
 
     @RequestMapping(value = "/cases/{countryCode}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getCasesByCountry(@PathVariable String countryCode) throws MalformedURLException {
-        return ResponseEntity.ok(countryCode + " Active Cases " + covidService.getCasesByCountryId(countryCode));
+        String[] arr = countryCode.split("\\s+");
+        return ResponseEntity.ok(arr[1] + " Active Cases " + covidService.getCasesByCountryId(arr[1]));
     }
+
+    @RequestMapping(value = "/deaths/{countryCode}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> getDeathByCountry(@PathVariable String countryCode) throws MalformedURLException {
+        String[] arr = countryCode.split("\\s+");
+        return ResponseEntity.ok(arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]));
+    }
+
 }
 

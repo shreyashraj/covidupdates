@@ -1,9 +1,11 @@
 package com.ss.covidupdate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.annotation.Id;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Global {
+
     long NewConfirmed;
     long TotalConfirmed;
     long NewDeaths;

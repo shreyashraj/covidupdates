@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class        CountryDetails {
+public class CountryDetails {
 
     String Country;
     String Slug;
