@@ -15,7 +15,7 @@ public class ScheduleService {
 
     @Scheduled(cron = "0 0/1 * * * ?")
     public void scheduleFetchData() throws MalformedURLException {
-        //covidService.getGlobalData();
+        covidService.getGlobalData();
     }
 
 }

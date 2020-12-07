@@ -63,10 +63,17 @@ public class CovidService {
         Summary c = json.fromJson(countries.getBody(), Summary.class);
         //System.out.println(Arrays.asList(c));
         List<Countries> countryDetails = c.getCountries();
+        if(countryRepository.findAll() != null){
+            log.info("Deleting Old Data");
+            countryRepository.deleteAll();
+            globalData.deleteAll();
+        }
+        log.info("Updating new Data");
         countryRepository.saveAll(countryDetails);
         globalData.save(c.getGlobal());
         return Arrays.asList(c);
     }
+
 
     /**+
      * Get all the cases by Country ID
