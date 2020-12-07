@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -41,20 +45,26 @@ public class CovidController {
     }
 
     @RequestMapping(value = "/cases/{countryCode}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getCasesByCountry(@PathVariable String countryCode) throws MalformedURLException {
-        String[] arr = countryCode.split("\\s+");
+    public ResponseEntity<?> getCasesByCountry(@PathVariable String countryCode) throws MalformedURLException, UnsupportedEncodingException {
+        String cCode= URLDecoder.decode(countryCode, StandardCharsets.UTF_8.toString());;
+
+        String[] arr = cCode.split("\\s+");
         return ResponseEntity.ok(arr[1] + " Active Cases " + covidService.getCasesByCountryId(arr[1]));
     }
 
     @RequestMapping(value = "/deaths/{countryCode}", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<?> getDeathByCountry(@PathVariable String countryCode) throws MalformedURLException {
-        String[] arr = countryCode.split("\\s+");
+    public ResponseEntity<?> getDeathByCountry(@PathVariable String countryCode) throws MalformedURLException, UnsupportedEncodingException {
+        String cCode= URLDecoder.decode(countryCode, StandardCharsets.UTF_8.toString());;
+
+        String[] arr = cCode.split("\\s+");
         return ResponseEntity.ok(arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]));
     }
 
     @RequestMapping(value = "/twilio/{countryCode}", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<?> getDataForTwilio(@PathVariable String countryCode) throws MalformedURLException {
-        String[] arr = countryCode.split("\\s+");
+    public ResponseEntity<?> getDataForTwilio(@PathVariable String countryCode) throws MalformedURLException, UnsupportedEncodingException {
+        String cCode= URLDecoder.decode(countryCode, StandardCharsets.UTF_8.toString());;
+
+        String[] arr = cCode.split("\\s+");
         if(arr[0].equalsIgnoreCase("DEATHS")){
             return ResponseEntity.ok(arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]));
         }
