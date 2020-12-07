@@ -3,6 +3,7 @@ package com.ss.covidupdate.controller;
 import com.ss.covidupdate.model.CountryDetails;
 import com.ss.covidupdate.model.Summary;
 import com.ss.covidupdate.service.CovidService;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,20 @@ public class CovidController {
     public ResponseEntity<?> getDeathByCountry(@PathVariable String countryCode) throws MalformedURLException {
         String[] arr = countryCode.split("\\s+");
         return ResponseEntity.ok(arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]));
+    }
+
+    @RequestMapping(value = "/twilio/{countryCode}", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<?> getDataForTwilio(@PathVariable String countryCode) throws MalformedURLException {
+        String[] arr = countryCode.split("\\s+");
+        if(arr[0].equalsIgnoreCase("DEATHS")){
+            return ResponseEntity.ok(arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]));
+        }
+        else if(arr[0].equalsIgnoreCase("CASES")){
+            return ResponseEntity.ok(arr[1] + " Active Cases " + covidService.getCasesByCountryId(arr[1]));
+        }else{
+            return ResponseEntity.ok("Invalid Country Code");
+        }
+
     }
 
 }
