@@ -3,7 +3,9 @@ package com.ss.covidupdate.controller;
 import com.ss.covidupdate.model.CountryDetails;
 import com.ss.covidupdate.model.Summary;
 import com.ss.covidupdate.service.CovidService;
-import org.apache.tomcat.util.json.JSONParser;
+import com.twilio.twiml.MessagingResponse;
+import com.twilio.twiml.messaging.Body;
+import com.twilio.twiml.messaging.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/covid")
@@ -63,18 +65,20 @@ public class CovidController {
     @RequestMapping(value = "/twilio/{countryCode}", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<?> getDataForTwilio(@PathVariable String countryCode) throws MalformedURLException, UnsupportedEncodingException {
         String cCode= URLDecoder.decode(countryCode, StandardCharsets.UTF_8.toString());;
-
         String[] arr = cCode.split("\\s+");
         if(arr[0].equalsIgnoreCase("DEATHS")){
-            return ResponseEntity.ok(arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]));
+            String response = arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]);
+            SmsController.sendMessage(response);
+            return ResponseEntity.ok(response);
         }
         else if(arr[0].equalsIgnoreCase("CASES")){
-            return ResponseEntity.ok(arr[1] + " Active Cases " + covidService.getCasesByCountryId(arr[1]));
+            String response = arr[1] + " Active Cases " + covidService.getCasesByCountryId(arr[1]);
+            SmsController.sendMessage(response);
+            return ResponseEntity.ok(response);
         }else{
+            SmsController.sendMessage("Invalid Country Code");
             return ResponseEntity.ok("Invalid Country Code");
         }
-
     }
-
 }
 
