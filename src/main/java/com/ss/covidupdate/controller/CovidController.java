@@ -3,13 +3,11 @@ package com.ss.covidupdate.controller;
 import com.ss.covidupdate.model.CountryDetails;
 import com.ss.covidupdate.model.Summary;
 import com.ss.covidupdate.service.CovidService;
-import com.twilio.twiml.MessagingResponse;
-import com.twilio.twiml.messaging.Body;
-import com.twilio.twiml.messaging.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
@@ -20,6 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/covid")
 public class CovidController {
+
+    private static final Logger log = LoggerFactory.getLogger(CovidController.class);
 
     @Autowired
     private CovidService covidService;
@@ -78,6 +78,35 @@ public class CovidController {
         }else{
             SmsController.sendMessage("Invalid Country Code");
             return ResponseEntity.ok("Invalid Country Code");
+        }
+    }
+
+    /**+
+     * Twilio post call to fetch CASES by Country Code and Deaths By Country Code
+     *
+     * @param Body
+     * @return String result
+     * @throws MalformedURLException
+     * @throws UnsupportedEncodingException
+     */
+    @RequestMapping(value = "/twilio/updates", method = RequestMethod.POST)
+    public String postDataForTwilio(@RequestParam(name = "Body") String Body) throws MalformedURLException, UnsupportedEncodingException {
+    log.info("Working whatsapp integration");
+    String response = "Invalid Code";
+    String cCode= URLDecoder.decode(Body, StandardCharsets.UTF_8.toString());;
+    String[] arr = cCode.split("\\s+");
+        if(arr[0].equalsIgnoreCase("DEATHS")){
+            response = arr[1] + " Death Cases " + covidService.getDeathByCountryId(arr[1]);
+            //SmsController.sendMessage(response);
+            return response;
+        }
+        else if(arr[0].equalsIgnoreCase("CASES")){
+            response = arr[1] + " Active Cases " + covidService.getCasesByCountryId(arr[1]);
+            //SmsController.sendMessage(response);
+            return response;
+        }else{
+            //SmsController.sendMessage("Invalid Country Code");
+            return response;
         }
     }
 }

@@ -7,6 +7,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.net.MalformedURLException;
 
+/**+
+ * Scheduler to pull messages from covid api and update in mongo DB
+ */
 @Configuration
 public class ScheduleService {
 
